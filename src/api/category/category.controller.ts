@@ -48,7 +48,7 @@ export class CategoryController {
         try {
             const categories = await this.service.getCategories(query.page, query.limit);
             return {
-                categories: categories as CategoryDto[],
+                categories: categories?.map(CategoryDto.fromModel),
                 pagination: {
                     nextPage: (query.page ?? 0) + 1,
                     limit: query.limit ?? defaultPageSize,
@@ -78,7 +78,7 @@ export class CategoryController {
         try {
             const category = await this.service.createCategory(body.name);
             return {
-                category: category as CategoryDto,
+                category: CategoryDto.fromModel(category),
             };
         } catch (e) {
             Logger.error(e);

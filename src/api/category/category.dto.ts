@@ -8,6 +8,7 @@ import {
 	Max,
 	Min
 } from 'class-validator';
+import { Category } from 'src/db/model/category.model';
 import { defaultPageSize } from 'src/db/operations/db-operation.interface';
 
 export class PaginationData {
@@ -33,6 +34,20 @@ export class CategoryDto {
         nullable: true,
     })
     updatedAt: Date
+
+    @ApiProperty()
+    products: string[]
+
+
+    public static fromModel(model: Category): CategoryDto {
+        return {
+            id: model.id,
+            name: model.name,
+            products: model.products?.map(p => p.id),
+            createdAt: model.createdAt,
+            updatedAt: model.updatedAt,
+        };
+    }
 }
 
 export class GetCategoriesDto {

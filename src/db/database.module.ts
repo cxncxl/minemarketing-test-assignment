@@ -7,6 +7,7 @@ import { GetCategoriesDbOperation } from './operations/get-categories-db-operati
 import { ConfigModule } from '@nestjs/config';
 import { Category } from './model/category.model';
 import { Product } from './model/product.model';
+import { CreateProductDbOperation } from './operations/create-product-db-operation';
 
 @Module({
     imports: [
@@ -29,10 +30,12 @@ import { Product } from './model/product.model';
     providers: [
         GetCategoriesDbOperation,
         CreateCategoryDbOperation,
+        CreateProductDbOperation,
     ],
     exports: [
         GetCategoriesDbOperation,
         CreateCategoryDbOperation,
+        CreateProductDbOperation,
     ],
 })
 export class DatabaseModule {}

@@ -11,9 +11,10 @@ export class GetCategoriesDbOperation implements DbOperation<GetCategoriesFilter
 
     public async execute(input: GetCategoriesFilter) {
         return await this.repository
-            .createQueryBuilder()
+            .createQueryBuilder('category')
             .skip(input.page ?? 0 * input.limit ?? defaultPageSize)
             .take(input.limit ?? defaultPageSize)
+            .leftJoinAndSelect('category.products', 'product')
             .getMany();
     }
 }

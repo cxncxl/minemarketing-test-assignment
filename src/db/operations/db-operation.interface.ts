@@ -16,3 +16,4 @@ export class DuplicateValueError extends Error {
         return `Duplicate exists in the db: ${this.duplicateId}`;
     }
 }
+export class InvalidRelationError extends Error{}

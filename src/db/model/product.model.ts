@@ -31,7 +31,7 @@ export class Product {
         nullable: false,
         default: 0,
     })
-    stock: Number
+    stock: number
 
     @Column({
         type: 'decimal',
@@ -39,7 +39,7 @@ export class Product {
         scale: 2,
         nullable: false,
     })
-    price: Number
+    price: number
 
     @Column({
         type: 'timestamp',
