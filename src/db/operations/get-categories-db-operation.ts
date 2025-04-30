@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { Category } from '../model/category.model';
 import { DbOperation } from './db-operation.interface';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Pagination } from 'src/api/shared/pagination';
+import { Pagination } from '../../api/shared/pagination';
 
 export class GetCategoriesDbOperation implements DbOperation<GetCategoriesFilter, Category[]> {
     constructor(
