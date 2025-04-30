@@ -11,7 +11,7 @@ import {
 import { CategoryService } from './category.service';
 import { CategoryDto, CreateCategoryDto, CreateCategoryResponse, GetCategoriesDto, GetCategoriesResponse } from './category.dto';
 import { Logger } from 'src/shared/logger/logger';
-import { DuplicateValueError } from 'src/db/operations/db-operation.interface';
+import { DuplicateValueError, InvalidInputError } from 'src/db/operations/db-operation.interface';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Pagination, PaginationUtils } from '../shared/pagination';
 
@@ -69,6 +69,12 @@ export class CategoryController {
             };
         } catch (e) {
             Logger.error(e);
+
+            if (e instanceof InvalidInputError) {
+                throw new HttpException({
+                    error: 'invalid data passed',
+                }, HttpStatus.BAD_REQUEST);
+            }
 
             if (e instanceof DuplicateValueError) {
                 throw new HttpException({

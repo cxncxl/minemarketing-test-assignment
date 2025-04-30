@@ -15,3 +15,4 @@ export class DuplicateValueError extends Error {
     }
 }
 export class InvalidRelationError extends Error{}
+export class UnknownEntityError extends Error{}

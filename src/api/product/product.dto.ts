@@ -6,12 +6,13 @@ import {
 	IsOptional,
 	IsString,
 	IsUUID,
+    Max,
     Min
 } from 'class-validator';
 import { Product } from 'src/db/model/product.model';
 import { CategoryDto } from '../category/category.dto';
 import { Type } from 'class-transformer';
-import { PaginationResponse } from '../shared/pagination';
+import { PaginationResponse, PaginationUtils } from '../shared/pagination';
 
 export class ProductDto {
     @ApiProperty()
@@ -57,12 +58,15 @@ export class ProductDto {
 export class GetProductsDto {
     @ApiProperty({ required: false })
     @IsNumber()
+    @Min(1)
     @IsOptional()
     @Type(() => Number)
     page?: number
 
     @ApiProperty({ required: false })
     @IsNumber()
+    @Min(1)
+    @Max(PaginationUtils.defaultPageSize)
     @IsOptional()
     @Type(() => Number)
     limit?: number
@@ -127,6 +131,32 @@ export class CreateProductDto {
     price: number
 }
 
+export class UpdateProductParams {
+    @ApiProperty({ required: true })
+    @IsUUID()
+    @IsNotEmpty()
+    id: string
+}
+
+export class UpdateProductDto {
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    name?: string
+
+    @ApiProperty()
+    @IsInt()
+    @IsOptional()
+    @Type(() => Number)
+    stock?: number
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    price?: number
+}
+
 export class CreateProductResponse {
     @ApiProperty()
     product: ProductDto
@@ -138,4 +168,9 @@ export class GetProductsResponse {
 
     @ApiProperty()
     pagination: PaginationResponse
+}
+
+export class UpdateProductResponse {
+    @ApiProperty()
+    product: ProductDto
 }

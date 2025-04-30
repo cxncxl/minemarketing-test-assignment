@@ -47,7 +47,7 @@ export class GetCategoriesDto {
     @ApiProperty({ required: false })
     @IsInt()
     @IsOptional()
-    @Min(0)
+    @Min(1)
     @Type(() => Number)
     @Transform(val => parseInt(val.value))
     page?: number

@@ -2,11 +2,15 @@ import {
     Body,
 	Controller,
 	Get,
+	HttpException,
+	HttpStatus,
 	InternalServerErrorException,
+	Param,
 	Post,
+    Put,
     Query
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { ProductService } from './product.service';
 import {
@@ -14,10 +18,14 @@ import {
 	CreateProductResponse,
 	GetProductsDto,
 	GetProductsResponse,
-	ProductDto
+	ProductDto,
+    UpdateProductDto,
+    UpdateProductParams,
+    UpdateProductResponse
 } from './product.dto';
 import { Pagination, PaginationUtils } from '../shared/pagination';
 import { Logger } from '../../shared/logger/logger';
+import { InvalidInputError, InvalidRelationError, UnknownEntityError } from 'src/db/operations/db-operation.interface';
 
 @Controller('product')
 export class ProductController {
@@ -82,7 +90,65 @@ export class ProductController {
             };
         } catch (e) {
             Logger.error(e);
+
+            if (e instanceof InvalidInputError) {
+                throw new HttpException({
+                    error: 'invalid data passed',
+                }, HttpStatus.BAD_REQUEST);
+            }
+
+            if (e instanceof InvalidRelationError) {
+                throw new HttpException({
+                    error: 'unknown categoryId',
+                }, HttpStatus.BAD_REQUEST);
+            }
+
             throw new InternalServerErrorException();
+        }
+    }
+
+    @Put('/:id')
+    @ApiOperation({
+        summary: 'Update a product',
+    })
+    @ApiBody({
+        type: UpdateProductDto,
+    })
+    @ApiParam({
+        name: 'id',
+        type: String,
+    })
+    @ApiResponse({
+        status: 200,
+        type: UpdateProductResponse,
+    })
+    async updateProduct(
+        @Param() params: UpdateProductParams,
+        @Body() body: UpdateProductDto,
+    ): Promise<UpdateProductResponse> {
+        try {
+            const updated = await this.service.updateProduct(
+                params.id,
+                body.name, body.stock, body.price,
+            );
+
+            return {
+                product: ProductDto.fromModel(updated),
+            };
+        } catch (e) {
+            Logger.error(e);
+
+            if (e instanceof InvalidInputError) {
+                throw new HttpException({
+                    error: 'at least one of name, stock or price must be provided',
+                }, HttpStatus.BAD_REQUEST);
+            }
+
+            if (e instanceof UnknownEntityError) {
+                throw new HttpException({
+                    error: 'product not found',
+                }, HttpStatus.NOT_FOUND);
+            }
         }
     }
 }

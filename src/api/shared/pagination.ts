@@ -5,12 +5,12 @@ export class Pagination {
         public readonly page?: number,
         public readonly limit?: number,
     ) {
-        if (!page) this.page = 0;
+        if (!page) this.page = 1;
         if (!limit) this.limit = PaginationUtils.defaultPageSize;
     }
 
     public get skip() {
-        return this.page * this.limit;
+        return (this.page - 1) * this.limit;
     }
 }
 
@@ -28,7 +28,7 @@ export class PaginationUtils {
     ): PaginationResponse {
         if (took == 0) {
             return {
-                nextPage: prev.page ?? 0,
+                nextPage: prev.page ?? 1,
             };
         }
 

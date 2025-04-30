@@ -9,6 +9,7 @@ import { Category } from './model/category.model';
 import { Product } from './model/product.model';
 import { CreateProductDbOperation } from './operations/create-product-db-operation';
 import { GetProductsDbOperation } from './operations/get-products-db-operation';
+import { UpdateProductDbOperation } from './operations/update-product-db-operation';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { GetProductsDbOperation } from './operations/get-products-db-operation';
 
         GetProductsDbOperation,
         CreateProductDbOperation,
+        UpdateProductDbOperation,
     ],
     exports: [
         GetCategoriesDbOperation,
@@ -41,6 +43,7 @@ import { GetProductsDbOperation } from './operations/get-products-db-operation';
 
         GetProductsDbOperation,
         CreateProductDbOperation,
+        UpdateProductDbOperation,
     ],
 })
 export class DatabaseModule {}
