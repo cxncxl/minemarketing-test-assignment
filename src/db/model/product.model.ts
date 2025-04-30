@@ -24,11 +24,7 @@ export class Product {
         () => Category,
         (category) => category.id,
     )
-    @Column({
-        type: 'uuid',
-        name: 'category_id',
-    })
-    categoryId: Category
+    category: Category
 
     @Column({
         type: 'int',

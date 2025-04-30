@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Product } from './product.model';
 
 @Entity()
 export class Category {
@@ -23,4 +24,10 @@ export class Category {
         nullable: true,
     })
     updatedAt?: Date
+
+    @OneToMany(
+        () => Product,
+        (product) => product.category,
+    )
+    products: Product[]
 }
