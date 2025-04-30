@@ -4,6 +4,7 @@ import { config } from 'dotenv';
 import { Category } from '../src/db/model/category.model';
 import { Product } from '../src/db/model/product.model';
 import { getEnvInt, getEnvString } from '../src/shared/util/util';
+import { StockUpdate } from '../src/db/model/stock-update.model';
 
 config();
 
@@ -17,6 +18,7 @@ export default new DataSource({
     entities: [
         Category,
         Product,
+        StockUpdate,
     ],
     migrations: [
         './migration/migrations/*.ts'

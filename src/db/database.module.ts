@@ -11,6 +11,8 @@ import { CreateProductDbOperation } from './operations/create-product-db-operati
 import { GetProductsDbOperation } from './operations/get-products-db-operation';
 import { UpdateProductDbOperation } from './operations/update-product-db-operation';
 import { DeleteProductDbOperation } from './operations/delete-product-db-operation';
+import { StockUpdate } from './model/stock-update.model';
+import { UpdateStocksDbOperation } from './operations/update-stocks-db-operation';
 
 @Module({
     imports: [
@@ -25,10 +27,15 @@ import { DeleteProductDbOperation } from './operations/delete-product-db-operati
             entities: [
                 Category,
                 Product,
+                StockUpdate,
             ],
             logging: false,
         }),
-        TypeOrmModule.forFeature([Category, Product]),
+        TypeOrmModule.forFeature([
+            Category,
+            Product,
+            StockUpdate,
+        ]),
     ],
     providers: [
         GetCategoriesDbOperation,
@@ -38,6 +45,8 @@ import { DeleteProductDbOperation } from './operations/delete-product-db-operati
         CreateProductDbOperation,
         UpdateProductDbOperation,
         DeleteProductDbOperation,
+
+        UpdateStocksDbOperation,
     ],
     exports: [
         GetCategoriesDbOperation,
@@ -47,6 +56,8 @@ import { DeleteProductDbOperation } from './operations/delete-product-db-operati
         CreateProductDbOperation,
         UpdateProductDbOperation,
         DeleteProductDbOperation,
+
+        UpdateStocksDbOperation,
     ],
 })
 export class DatabaseModule {}

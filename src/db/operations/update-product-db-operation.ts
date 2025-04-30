@@ -41,6 +41,8 @@ export class UpdateProductDbOperation implements DbOperation<UpdateProductInput,
             product.price = input.data.price;
         }
 
+        product.updatedAt = new Date();
+
         return await this.repository.save(product);
     }
 }
