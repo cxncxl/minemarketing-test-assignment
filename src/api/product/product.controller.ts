@@ -9,9 +9,9 @@ import {
 	Param,
 	Post,
     Put,
-    Query
+    Query,
 } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { ProductService } from './product.service';
 import {
@@ -24,11 +24,16 @@ import {
 	ProductDto,
     UpdateProductDto,
     UpdateProductParams,
-    UpdateProductResponse
+    UpdateProductResponse,
 } from './product.dto';
 import { Pagination, PaginationUtils } from '../shared/pagination';
 import { Logger } from '../../shared/logger/logger';
-import { DuplicateValueError, InvalidInputError, InvalidRelationError, UnknownEntityError } from 'src/db/operations/db-operation.interface';
+import {
+    DuplicateValueError,
+	InvalidInputError,
+	InvalidRelationError,
+	UnknownEntityError,
+} from 'src/db/operations/db-operation.interface';
 
 @Controller('product')
 export class ProductController {

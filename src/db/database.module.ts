@@ -13,6 +13,7 @@ import { UpdateProductDbOperation } from './operations/update-product-db-operati
 import { DeleteProductDbOperation } from './operations/delete-product-db-operation';
 import { StockUpdate } from './model/stock-update.model';
 import { UpdateStocksDbOperation } from './operations/update-stocks-db-operation';
+import { GetStockUpdatesDbOperation } from './operations/get-stock-updates-db-operation';
 
 @Module({
     imports: [
@@ -47,6 +48,7 @@ import { UpdateStocksDbOperation } from './operations/update-stocks-db-operation
         DeleteProductDbOperation,
 
         UpdateStocksDbOperation,
+        GetStockUpdatesDbOperation,
     ],
     exports: [
         GetCategoriesDbOperation,
@@ -58,6 +60,7 @@ import { UpdateStocksDbOperation } from './operations/update-stocks-db-operation
         DeleteProductDbOperation,
 
         UpdateStocksDbOperation,
+        GetStockUpdatesDbOperation,
     ],
 })
 export class DatabaseModule {}

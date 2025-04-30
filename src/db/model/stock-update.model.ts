@@ -1,4 +1,10 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, RelationId } from 'typeorm';
+import {
+    Column,
+	Entity,
+	JoinColumn,
+	ManyToOne,
+	PrimaryGeneratedColumn
+} from 'typeorm';
 import { Product } from './product.model';
 
 @Entity()
@@ -6,7 +12,7 @@ export class StockUpdate {
     @PrimaryGeneratedColumn('uuid')
     id: string
 
-    @OneToOne(
+    @ManyToOne(
         () => Product,
         (product) => product.id,
     )

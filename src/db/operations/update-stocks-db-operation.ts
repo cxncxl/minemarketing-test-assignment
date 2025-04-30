@@ -4,6 +4,7 @@ import { DataSource, LessThan } from 'typeorm';
 import { DbOperation } from './db-operation.interface';
 import { StockUpdate } from '../model/stock-update.model';
 import { Product } from '../model/product.model';
+import { Logger } from 'src/shared/logger/logger';
 
 @Injectable()
 export class UpdateStocksDbOperation implements DbOperation<void, void> {
@@ -39,6 +40,8 @@ export class UpdateStocksDbOperation implements DbOperation<void, void> {
             update.newStock = newStock;
             update.updatedAt = new Date();
 
+            updates.push(update);
+
             product.stock = newStock;
             product.updatedAt = new Date();
         }
@@ -48,8 +51,10 @@ export class UpdateStocksDbOperation implements DbOperation<void, void> {
             await query.manager.save(updates);
         } catch (e) {
             await query.rollbackTransaction();
+            Logger.error('Failed to update stocks:', e);
         } finally {
             await query.commitTransaction();
+            Logger.info('Updated', updates.length, 'stocks');
         }
     }
 }

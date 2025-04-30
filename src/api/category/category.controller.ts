@@ -6,10 +6,16 @@ import {
 	HttpStatus,
 	InternalServerErrorException,
 	Post,
-    Query
+    Query,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CategoryDto, CreateCategoryDto, CreateCategoryResponse, GetCategoriesDto, GetCategoriesResponse } from './category.dto';
+import {
+    CategoryDto,
+	CreateCategoryDto,
+	CreateCategoryResponse,
+	GetCategoriesDto,
+	GetCategoriesResponse,
+} from './category.dto';
 import { Logger } from 'src/shared/logger/logger';
 import { DuplicateValueError, InvalidInputError } from 'src/db/operations/db-operation.interface';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
