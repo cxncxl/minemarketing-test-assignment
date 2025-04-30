@@ -7,9 +7,10 @@ import {
     Query
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CreateCategoryDto, GetCategoriesDto } from './category.dto';
+import { CategoryDto, CreateCategoryDto, CreateCategoryResponse, GetCategoriesDto, GetCategoriesResponse } from './category.dto';
 import { Logger } from 'src/shared/logger/logger';
 import { defaultPageSize } from 'src/db/operations/db-operation.interface';
+import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller('category')
 export class CategoryController {
@@ -18,15 +19,38 @@ export class CategoryController {
     ) {}
 
     @Get()
+    @ApiOperation({
+        summary: 'Get list of categories',
+    })
+    @ApiQuery({
+        name: 'page',
+        required: false,
+        type: Number,
+        default: 0,
+        description: 'Pagination page',
+    })
+    @ApiQuery({
+        name: 'limit',
+        required: false,
+        type: Number,
+        minimum: 1,
+        maximum: defaultPageSize,
+        default: defaultPageSize,
+        description: 'Amount of records to take',
+    })
+    @ApiResponse({
+        status: 200,
+        type: GetCategoriesResponse,
+    })
     async getCategories(
         @Query() query: GetCategoriesDto,
-    ) {
+    ): Promise<GetCategoriesResponse> {
         try {
-            const categories = this.service.getCategories(query.page, query.limit);
+            const categories = await this.service.getCategories(query.page, query.limit);
             return {
-                categories,
+                categories: categories as CategoryDto[],
                 pagination: {
-                    next_page: query.page ?? 0 + 1,
+                    nextPage: (query.page ?? 0) + 1,
                     limit: query.limit ?? defaultPageSize,
                 },
             };
@@ -37,11 +61,25 @@ export class CategoryController {
     }
 
     @Post()
+    @ApiOperation({
+        summary: 'Create a category',
+    })
+    @ApiBody({
+        type: CreateCategoryDto,
+        required: true,
+    })
+    @ApiResponse({
+        status: 201,
+        type: CreateCategoryResponse,
+    })
     async createCategory(
         @Body() body: CreateCategoryDto,
-    ) {
+    ): Promise<CreateCategoryResponse> {
         try {
-            return this.service.createCategory(body.name);
+            const category = await this.service.createCategory(body.name);
+            return {
+                category: category as CategoryDto,
+            };
         } catch (e) {
             Logger.error(e);
             throw new InternalServerErrorException();
