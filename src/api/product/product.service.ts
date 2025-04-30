@@ -3,6 +3,7 @@ import { CreateProductDbOperation } from 'src/db/operations/create-product-db-op
 import { GetProductsDbOperation } from 'src/db/operations/get-products-db-operation';
 import { Pagination } from '../shared/pagination';
 import { UpdateProductDbOperation } from 'src/db/operations/update-product-db-operation';
+import { DeleteProductDbOperation } from 'src/db/operations/delete-product-db-operation';
 
 @Injectable()
 export class ProductService {
@@ -10,6 +11,7 @@ export class ProductService {
         private readonly getProductsDbOp: GetProductsDbOperation,
         private readonly createProductDbOp: CreateProductDbOperation,
         private readonly updateProductDbOp: UpdateProductDbOperation,
+        private readonly deleteProductDbOp: DeleteProductDbOperation,
     ) {}
 
     public getProducts(
@@ -51,5 +53,11 @@ export class ProductService {
             id,
             data: { name, stock, price },
         });
+    }
+
+    public deleteProduct(
+        id: string,
+    ) {
+        return this.deleteProductDbOp.execute({ id });
     }
 }

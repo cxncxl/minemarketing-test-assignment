@@ -157,6 +157,13 @@ export class UpdateProductDto {
     price?: number
 }
 
+export class DeleteProductParams {
+    @ApiProperty({ required: true })
+    @IsUUID()
+    @IsNotEmpty()
+    id: string
+}
+
 export class CreateProductResponse {
     @ApiProperty()
     product: ProductDto
@@ -173,4 +180,9 @@ export class GetProductsResponse {
 export class UpdateProductResponse {
     @ApiProperty()
     product: ProductDto
+}
+
+export class DeleteProductResponse {
+    @ApiProperty()
+    status: 'ok'
 }

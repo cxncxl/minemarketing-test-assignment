@@ -1,6 +1,7 @@
 import {
     Body,
 	Controller,
+	Delete,
 	Get,
 	HttpException,
 	HttpStatus,
@@ -10,12 +11,14 @@ import {
     Put,
     Query
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 import { ProductService } from './product.service';
 import {
     CreateProductDto,
 	CreateProductResponse,
+	DeleteProductParams,
+	DeleteProductResponse,
 	GetProductsDto,
 	GetProductsResponse,
 	ProductDto,
@@ -25,7 +28,7 @@ import {
 } from './product.dto';
 import { Pagination, PaginationUtils } from '../shared/pagination';
 import { Logger } from '../../shared/logger/logger';
-import { InvalidInputError, InvalidRelationError, UnknownEntityError } from 'src/db/operations/db-operation.interface';
+import { DuplicateValueError, InvalidInputError, InvalidRelationError, UnknownEntityError } from 'src/db/operations/db-operation.interface';
 
 @Controller('product')
 export class ProductController {
@@ -103,6 +106,13 @@ export class ProductController {
                 }, HttpStatus.BAD_REQUEST);
             }
 
+            if (e instanceof DuplicateValueError) {
+                throw new HttpException({
+                    error: 'product with given sku already exists',
+                    details: e.duplicateId,
+                }, HttpStatus.CONFLICT);
+            }
+
             throw new InternalServerErrorException();
         }
     }
@@ -149,6 +159,40 @@ export class ProductController {
                     error: 'product not found',
                 }, HttpStatus.NOT_FOUND);
             }
+        }
+    }
+
+    @Delete('/:id')
+    @ApiOperation({
+        summary: 'Delete a product',
+    })
+    @ApiParam({
+        name: 'id',
+        type: String,
+    })
+    @ApiResponse({
+        status: '2XX',
+        type: DeleteProductResponse,
+    })
+    async deleteProduct(
+        @Param() params: DeleteProductParams,
+    ): Promise<DeleteProductResponse> {
+        try {
+            await this.service.deleteProduct(params.id);
+
+            return {
+                status: 'ok',
+            };
+        } catch (e) {
+            Logger.error(e);
+
+            if (e instanceof UnknownEntityError) {
+                throw new HttpException({
+                    error: 'product not found',
+                }, HttpStatus.NOT_FOUND);
+            }
+
+            throw new InternalServerErrorException();
         }
     }
 }
