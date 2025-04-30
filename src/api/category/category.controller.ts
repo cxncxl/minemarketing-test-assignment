@@ -9,6 +9,7 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto, GetCategoriesDto } from './category.dto';
 import { Logger } from 'src/shared/logger/logger';
+import { defaultPageSize } from 'src/db/operations/db-operation.interface';
 
 @Controller('category')
 export class CategoryController {
@@ -21,7 +22,14 @@ export class CategoryController {
         @Query() query: GetCategoriesDto,
     ) {
         try {
-            return this.service.getCategories(query.page, query.limit);
+            const categories = this.service.getCategories(query.page, query.limit);
+            return {
+                categories,
+                pagination: {
+                    next_page: query.page ?? 0 + 1,
+                    limit: query.limit ?? defaultPageSize,
+                },
+            };
         } catch (e) {
             Logger.error(e);
             throw new InternalServerErrorException();

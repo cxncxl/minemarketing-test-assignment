@@ -14,7 +14,7 @@ export class GetCategoriesDbOperation implements DbOperation<GetCategoriesFilter
             .createQueryBuilder()
             .skip(input.page ?? 0 * input.limit ?? defaultPageSize)
             .take(input.limit ?? defaultPageSize)
-            .getMany()
+            .getMany();
     }
 }
 
