@@ -1,7 +1,8 @@
 import { Repository } from 'typeorm';
 import { Category } from '../model/category.model';
-import { DbOperation, defaultPageSize } from './db-operation.interface';
+import { DbOperation } from './db-operation.interface';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Pagination } from 'src/api/shared/pagination';
 
 export class GetCategoriesDbOperation implements DbOperation<GetCategoriesFilter, Category[]> {
     constructor(
@@ -12,14 +13,13 @@ export class GetCategoriesDbOperation implements DbOperation<GetCategoriesFilter
     public async execute(input: GetCategoriesFilter) {
         return await this.repository
             .createQueryBuilder('category')
-            .skip(input.page ?? 0 * input.limit ?? defaultPageSize)
-            .take(input.limit ?? defaultPageSize)
+            .skip(input.pagination.skip)
+            .take(input.pagination.limit)
             .leftJoinAndSelect('category.products', 'product')
             .getMany();
     }
 }
 
-export type GetCategoriesFilter = {
-    page?: number
-    limit?: number
+export class GetCategoriesFilter {
+    pagination: Pagination = new Pagination()
 };

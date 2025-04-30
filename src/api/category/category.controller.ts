@@ -2,6 +2,8 @@ import {
     Body,
 	Controller,
 	Get,
+	HttpException,
+	HttpStatus,
 	InternalServerErrorException,
 	Post,
     Query
@@ -9,8 +11,9 @@ import {
 import { CategoryService } from './category.service';
 import { CategoryDto, CreateCategoryDto, CreateCategoryResponse, GetCategoriesDto, GetCategoriesResponse } from './category.dto';
 import { Logger } from 'src/shared/logger/logger';
-import { defaultPageSize } from 'src/db/operations/db-operation.interface';
-import { ApiBody, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { DuplicateValueError } from 'src/db/operations/db-operation.interface';
+import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Pagination, PaginationUtils } from '../shared/pagination';
 
 @Controller('category')
 export class CategoryController {
@@ -21,22 +24,6 @@ export class CategoryController {
     @Get()
     @ApiOperation({
         summary: 'Get list of categories',
-    })
-    @ApiQuery({
-        name: 'page',
-        required: false,
-        type: Number,
-        default: 0,
-        description: 'Pagination page',
-    })
-    @ApiQuery({
-        name: 'limit',
-        required: false,
-        type: Number,
-        minimum: 1,
-        maximum: defaultPageSize,
-        default: defaultPageSize,
-        description: 'Amount of records to take',
     })
     @ApiResponse({
         status: 200,
@@ -49,10 +36,10 @@ export class CategoryController {
             const categories = await this.service.getCategories(query.page, query.limit);
             return {
                 categories: categories?.map(CategoryDto.fromModel),
-                pagination: {
-                    nextPage: (query.page ?? 0) + 1,
-                    limit: query.limit ?? defaultPageSize,
-                },
+                pagination: PaginationUtils.next(
+                    new Pagination(query.page, query.limit),
+                    categories?.length ?? 0,
+                ),
             };
         } catch (e) {
             Logger.error(e);
@@ -82,6 +69,16 @@ export class CategoryController {
             };
         } catch (e) {
             Logger.error(e);
+
+            if (e instanceof DuplicateValueError) {
+                throw new HttpException({
+                    error: 'duplicate value',
+                    details: {
+                        duplicate: e.duplicateId,
+                    },
+                }, HttpStatus.CONFLICT);
+            }
+
             throw new InternalServerErrorException();
         }
     }

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId } from 'typeorm';
 
 import { Category } from './category.model';
 
@@ -26,6 +26,9 @@ export class Product {
     )
     category: Category
 
+    @RelationId((product: Product) => product.category)
+    categoryId: string;
+
     @Column({
         type: 'int',
         nullable: false,
@@ -38,6 +41,10 @@ export class Product {
         precision: 10,
         scale: 2,
         nullable: false,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string): number => parseFloat(value),
+        },
     })
     price: number
 

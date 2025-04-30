@@ -9,15 +9,8 @@ import {
 	Min
 } from 'class-validator';
 import { Category } from 'src/db/model/category.model';
-import { defaultPageSize } from 'src/db/operations/db-operation.interface';
+import { PaginationResponse, PaginationUtils } from '../shared/pagination';
 
-export class PaginationData {
-    @ApiProperty()
-    nextPage: number
-
-    @ApiProperty()
-    limit: number
-}
 
 @ApiSchema()
 export class CategoryDto {
@@ -51,6 +44,7 @@ export class CategoryDto {
 }
 
 export class GetCategoriesDto {
+    @ApiProperty({ required: false })
     @IsInt()
     @IsOptional()
     @Min(0)
@@ -58,10 +52,11 @@ export class GetCategoriesDto {
     @Transform(val => parseInt(val.value))
     page?: number
 
+    @ApiProperty({ required: false })
     @IsInt()
     @IsOptional()
     @Min(1)
-    @Max(defaultPageSize)
+    @Max(PaginationUtils.defaultPageSize)
     @Type(() => Number)
     limit?: number
 }
@@ -84,9 +79,9 @@ export class GetCategoriesResponse {
     })
     categories: CategoryDto[]
     @ApiProperty({
-        type: PaginationData
+        type: PaginationResponse,
     })
-    pagination: PaginationData
+    pagination?: PaginationResponse
 };
 
 export class CreateCategoryResponse {
