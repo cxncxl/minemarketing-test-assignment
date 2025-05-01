@@ -132,7 +132,8 @@ Can return 429 (Conflict) error if category with given name already exists
 
 **Get list of products**
 
-##### Query parameters: `page`, `limit` -- pagination, `categoryId` -- get only products
+##### Query parameters:
+`page`, `limit` -- pagination, `categoryId` -- get only products
 from specified category, `minStock` and `maxStock` -- filter products by stock,
 `minPrice` and `maxPrice` -- filter products by price
 
@@ -214,7 +215,8 @@ Can return 429 (Conflict) error if product with given `sku` already exists
 
 **Update a product**
 
-##### URL Parameter: `id` -- product's id
+##### URL Parameters:
+`id` -- product's id
 
 ##### Request body:
 
@@ -257,7 +259,8 @@ Can return 404 (Not found) error if product with given id does not exist
 
 **Delete product**
 
-##### URL Parameter: `id` -- product's id
+##### URL Parameters:
+`id` -- product's id
 
 ##### Response body:
 
@@ -276,7 +279,8 @@ Can return 404 (Not found) error if product with given id does not exist
 
 **Get history of stock updates**
 
-##### Query params: `page`, `limit` -- pagination, `date` -- date in ISO format (YYYY-MM-dd)
+##### Query params:
+`page`, `limit` -- pagination, `date` -- date in ISO format (YYYY-MM-dd)
 on which the updates happened, `hour` -- hour in military time (0-24) during which update
 happened, `categoryId` -- only get updates for products in specified category
 
@@ -389,3 +393,10 @@ Example:
     "productId": "244d5bed-89ae-462e-bac1-6cba7f583089"
 }
 ```
+
+## Cron job
+
+A cron job is defined in API service. Each 6 hours it founds products with
+stock less than 10, it updates their stock with random value between 5 and 20
+On each run it logs how many products are going to be updated in stdout, as well
+as errors if any pop up
