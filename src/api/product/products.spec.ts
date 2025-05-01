@@ -11,7 +11,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Category } from '../../db/model/category.model';
 import { Product } from '../../db/model/product.model';
 import { CreateProductResponse, GetProductsResponse } from './product.dto';
-import { DuplicateValueError, InvalidRelationError, UnknownEntityError } from '../../db/operations/db-operation.interface';
+import { DuplicateValueError, InvalidInputError, InvalidRelationError, UnknownEntityError } from '../../db/operations/db-operation.interface';
 
 describe('Products Module', () => {
     let controller: ProductController;
@@ -212,6 +212,137 @@ describe('Products Module', () => {
         expect((err as HttpException).getStatus()).toBe(HttpStatus.NOT_FOUND);
     });
 
+    test('e2e', async () => {
+        let products = [];
+        const categories = [{
+            id: 'test-category-id', name: 'test category', createdAt: new Date(),
+        }];
+
+        service.createProduct.mockImplementation((
+            name: string,
+            sku: string,
+            categoryId: string,
+            stock: number,
+            price: number,
+        ) => {
+            const dup = products.find(p => p.sku === sku);
+            if (dup) {
+                throw new DuplicateValueError(dup.id);
+            }
+
+            const category = categories.find(c => c.id === categoryId);
+            if (!category) {
+                throw new InvalidRelationError();
+            }
+
+            const product = new Product();
+            product.id = (Math.random() * 100000).toString();
+            product.name = name;
+            product.sku = sku;
+            product.categoryId = categoryId;
+            product.stock = stock;
+            product.price = price;
+
+            products.push(product);
+
+            return product;
+        });
+
+        service.getProducts.mockImplementation((
+            page?: number,
+            limit?: number,
+            categoryId?: string,
+            minStock?: number,
+            maxStock?: number,
+            minPrice?: number,
+            maxPrice?: number,
+        ) => {
+            return products.filter(product => {
+                if (categoryId && product.categoryId != categoryId) return false;
+                if (minStock && product.stock < minStock) return false;
+                if (maxStock && product.stock > maxStock) return false;
+                if (minPrice && product.price < minPrice) return false;
+                if (maxPrice && product.price > maxPrice) return false;
+                return true;
+            }).slice((page ?? 0) * (limit ?? 100), (page ?? 0) * (limit ?? 100) + (limit ?? 100));
+        });
+
+        service.updateProduct.mockImplementation((
+            id: string,
+            name?: string,
+            stock?: number,
+            price?: number,
+        ) => {
+            if (!name && !stock && !price) {
+                throw new InvalidInputError();
+            }
+
+            const product = products.find(p => p.id === id);
+            if (!product) {
+                throw new UnknownEntityError();
+            }
+
+            products.forEach(p => {
+                if (p.id != product.id) return;
+
+                p.name = name ?? p.name;
+                p.stock = stock ?? p.stock;
+                p.price = price ?? p.price;
+            });
+
+            return products;
+        });
+
+        service.deleteProduct.mockImplementation((id) => {
+            if (!products.find(p => p.id === id)) {
+                throw new UnknownEntityError();
+            }
+
+            products = products.filter(p => p.id != id);
+        });
+
+        const productsLenBefore = products.length;
+
+        const inserted = await controller.createProduct({
+            name: 'test insert',
+            sku: 'test-insert',
+            categoryId: 'test-category-id',
+            stock: 10,
+            price: 100.0,
+        });
+        const id = inserted.product.id;
+
+        const afterInsert = await controller.getProducts({});
+
+        expect(afterInsert.products.length).toBe(productsLenBefore + 1);
+        expect(
+            afterInsert.products.find(p => p.id === id)
+        ).toBeDefined();
+
+        await controller.updateProduct(
+            { id },
+            { stock: 50 },
+        );
+
+        const afterUpdate = await controller.getProducts({});
+
+        expect(
+            afterUpdate.products.find(p => p.id === id)
+        ).toBeDefined();
+
+        expect(
+            afterUpdate.products.find(p => p.id === id)?.stock
+        ).toBe(50);
+
+        await controller.deleteProduct({ id });
+
+        const afterDelete = await controller.getProducts({});
+
+        expect(afterDelete.products.length).toBe(productsLenBefore);
+        expect(
+            afterDelete.products.find(p => p.id === id)
+        ).toBeUndefined();
+    });
 });
 
 export class MockProductService extends ProductService {
