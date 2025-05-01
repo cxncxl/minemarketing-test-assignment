@@ -4,7 +4,7 @@ import { DataSource, LessThan } from 'typeorm';
 import { DbOperation } from './db-operation.interface';
 import { StockUpdate } from '../model/stock-update.model';
 import { Product } from '../model/product.model';
-import { Logger } from 'src/shared/logger/logger';
+import { Logger } from '../../shared/logger/logger';
 
 @Injectable()
 export class UpdateStocksDbOperation implements DbOperation<void, void> {

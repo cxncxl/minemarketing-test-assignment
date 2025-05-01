@@ -9,7 +9,7 @@ import {
     Max,
     Min
 } from 'class-validator';
-import { Product } from 'src/db/model/product.model';
+import { Product } from '../../db/model/product.model';
 import { CategoryDto } from '../category/category.dto';
 import { Type } from 'class-transformer';
 import { PaginationResponse, PaginationUtils } from '../shared/pagination';

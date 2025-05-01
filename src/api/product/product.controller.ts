@@ -33,7 +33,7 @@ import {
 	InvalidInputError,
 	InvalidRelationError,
 	UnknownEntityError,
-} from 'src/db/operations/db-operation.interface';
+} from '../../db/operations/db-operation.interface';
 
 @Controller('product')
 export class ProductController {

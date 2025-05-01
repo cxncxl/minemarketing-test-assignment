@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { getEnvInt, getEnvString } from 'src/shared/util/util';
+import { getEnvInt, getEnvString } from '../shared/util/util';
 import { CreateCategoryDbOperation } from './operations/create-category-db-operation';
 import { GetCategoriesDbOperation } from './operations/get-categories-db-operation';
 import { ConfigModule } from '@nestjs/config';

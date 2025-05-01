@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DbOperation } from './db-operation.interface';
 import { Product } from '../model/product.model';
 import { Repository } from 'typeorm';
-import { Pagination } from 'src/api/shared/pagination';
+import { Pagination } from '../../api/shared/pagination';
 
 @Injectable()
 export class GetProductsDbOperation implements DbOperation<GetProductsInput, Product[]> {

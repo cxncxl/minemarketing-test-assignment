@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductDbOperation } from 'src/db/operations/create-product-db-operation';
-import { GetProductsDbOperation } from 'src/db/operations/get-products-db-operation';
+import { CreateProductDbOperation } from '../../db/operations/create-product-db-operation';
+import { GetProductsDbOperation } from '../../db/operations/get-products-db-operation';
+import { UpdateProductDbOperation } from '../../db/operations/update-product-db-operation';
+import { DeleteProductDbOperation } from '../../db/operations/delete-product-db-operation';
 import { Pagination } from '../shared/pagination';
-import { UpdateProductDbOperation } from 'src/db/operations/update-product-db-operation';
-import { DeleteProductDbOperation } from 'src/db/operations/delete-product-db-operation';
 
 @Injectable()
 export class ProductService {
     constructor(
-        private readonly getProductsDbOp: GetProductsDbOperation,
-        private readonly createProductDbOp: CreateProductDbOperation,
-        private readonly updateProductDbOp: UpdateProductDbOperation,
-        private readonly deleteProductDbOp: DeleteProductDbOperation,
+        protected readonly getProductsDbOp: GetProductsDbOperation,
+        protected readonly createProductDbOp: CreateProductDbOperation,
+        protected readonly updateProductDbOp: UpdateProductDbOperation,
+        protected readonly deleteProductDbOp: DeleteProductDbOperation,
     ) {}
 
     public getProducts(

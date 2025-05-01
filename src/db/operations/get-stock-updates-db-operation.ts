@@ -5,7 +5,7 @@ import { DateTime } from 'luxon';
 
 import { DbOperation, InvalidRelationError } from './db-operation.interface';
 import { StockUpdate } from '../model/stock-update.model';
-import { Pagination } from 'src/api/shared/pagination';
+import { Pagination } from '../../api/shared/pagination';
 import { Category } from '../model/category.model';
 
 @Injectable()
