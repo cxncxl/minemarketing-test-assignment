@@ -1,0 +1,13 @@
+.git/
+.vscode/
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+tags
+**/*.swp
+dist/
+prisma/**/*.(t|j)s
+primsa/**/*.json
+prisma/**/.env
+.env
+coverage/
