@@ -1,4 +1,7 @@
-# Mine Marketing Test Assignment (Inventory Management API)
+# NestJS Demo Project (Inventory Management API)
+
+A test assignment for job application, shows off my NestJS skills as well
+as lack of TypeORM skills
 
 ## Overview
 
